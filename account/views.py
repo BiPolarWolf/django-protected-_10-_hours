@@ -34,4 +34,4 @@ def register_user(request):
     
 
 def email_verification_sent(request):
-    return render(request, 'account/registration/email-verification-sent.html')
+    return render(request, 'account/email/email-verification-sent.html')
