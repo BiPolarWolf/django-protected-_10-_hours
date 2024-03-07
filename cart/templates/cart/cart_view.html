@@ -1,16 +1,13 @@
-{% include "base.html" %} {% load static %} {% load mathfilters %} {% block content %}
+{% include "base.html" %} {% load static %} {% load mathfilters %}
+
+{% block content %}
 
 <main class="pt-5">
   <div class="container">
     <h1 class="h5">Shopping cart</h1>
 
     <hr />
-
-    {% for item in cart %}
-    {% with product=item.product %}
-    
-
-
+    {% for item in cart %} {% with product=item.product %}
     <br />
 
     <div class="row mb-4 border product-item">
@@ -24,10 +21,7 @@
       </div>
 
       <div class="col-md-9 col-lg-10 ps-md-3 ps-lg-10">
-        <a
-          href="#"
-          class="text-info text-decoration-none"
-        >
+        <a href="#" class="text-info text-decoration-none">
           <h1 class="h5 pt-2">{{product.title}}</h1>
         </a>
 
@@ -59,7 +53,6 @@
                   <option value="3">3</option>
 
                   <option value="4">4</option>
-
                 </select>
 
                 <br />
@@ -88,16 +81,20 @@
         </div>
       </div>
     </div>
-    {% endwith %}
-    {% endfor %}
+    {% endwith %} {% endfor %}
 
     <div class="col-12 text-end">
       <div class="h6 fw-bold">
-        Total:  $
-        <div id="total" class="d-inline-flex">
-          {{cart.get_total_price}} 
-        </div>
+        Total: $
+        <div id="total" class="d-inline-flex">{{cart.get_total_price}}</div>
       </div>
+      <button type="button" class="btn btn-success btn-md text-bg-light mt-4">
+        <a
+          class="nav-link text-decoration-none"
+          href="{% url 'payment:checkout' %}"
+          >Checkout</a
+        >
+      </button>
     </div>
   </div>
 
@@ -116,43 +113,42 @@
         action: "post",
         csrfmiddlewaretoken: "{{ csrf_token }}",
         product_id: $(this).data("index"),
-
       },
       success: function (response) {
-        document.getElementById('lblCartCount').textContent = response.qty;
-        location.reload()
+        document.getElementById("lblCartCount").textContent = response.qty;
+        location.reload();
       },
       error: function (err) {
         console.log(err);
-      }
-    })
-  })
+      },
+    });
+  });
 
   $(document).on("click", ".update-button", function (e) {
     e.preventDefault();
 
-    var product_id = $(this).data('index')
+    var product_id = $(this).data("index");
 
     $.ajax({
       type: "POST",
       url: "{% url 'cart:cart-update' %}",
       data: {
         action: "post",
-        csrfmiddlewaretoken:   "{{ csrf_token }}",
+        csrfmiddlewaretoken: "{{ csrf_token }}",
         product_id: $(this).data("index"),
-        product_qty: $('#select'+product_id+' option:selected').val()
+        product_qty: $("#select" + product_id + " option:selected").val(),
       },
       success: function (response) {
-        document.getElementById('lblCartCount').textContent = response.qty;
-        document.getElementById('total').textContent = response.total;
+        document.getElementById("lblCartCount").textContent = response.qty;
+        document.getElementById("total").textContent = response.total;
 
-        location.reload()
+        location.reload();
       },
       error: function (err) {
         console.log(err);
-      }
-    })
-  })
+      },
+    });
+  });
 </script>
 
 {% endblock %}

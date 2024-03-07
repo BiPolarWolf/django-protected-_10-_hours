@@ -1,20 +1,20 @@
 
-
 from pathlib import Path
+from django.conf.global_settings import STATICFILES_DIRS, STATICFILES_FINDERS
+from dotenv import load_dotenv ,dotenv_values
+import dotenv
 
-
-from django.conf.global_settings import STATIC_ROOT
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-SECRET_KEY = 'django-insecure-!c@n2p%)be$561(qxpd-cow8z)sz3h^-1yvn)x5=0j+!hh#1kx'
+SECRET_KEY = dotenv_values('.env').get('SECRET_KEY')
 
-DEBUG = True
+DEBUG = bool(int(dotenv_values('.env').get('DEBUG')))
 
 ALLOWED_HOSTS = ['*']
 
-
+load_dotenv()
 
 
 INSTALLED_APPS = [
@@ -33,11 +33,13 @@ INSTALLED_APPS = [
     'mathfilters',
     'crispy_forms',
     "crispy_bootstrap5",
-        
+    'django_google_fonts',
+
     #apps
     'shop.apps.ShopConfig',
     'cart.apps.CartConfig',
     'account.apps.AccountConfig',
+    'payment.apps.PaymentConfig',
     
 ]
 
@@ -58,7 +60,7 @@ ROOT_URLCONF = 'bigcorp.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'bigcorp' / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -119,10 +121,17 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'static'
+STATICFILES_DIRS = BASE_DIR / 'bigcorp' / 'static',
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+
+
+#fonts
+
+GOOGLE_FONTS = ["Montserrat:wght@300,400", "Roboto"]
+GOOGLE_FONTS_DIR = BASE_DIR / "static"
 
 #crispy forms
 
@@ -173,5 +182,17 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'snegirgik@gmail.com'
-EMAIL_HOST_PASSWORD =  'nrogomvoreupiypa'
+EMAIL_HOST_PASSWORD =  dotenv_values('.env')['EMAIL_HOST_PASSWORD']
 EMAIL_USE_TLS = True
+
+
+#stripe
+
+STRIPE_PUBLISHED_KEY = dotenv_values('.env')['STRIPE_PUBLISHED_KEY']
+STRIPE_SECRET_KEY = dotenv_values('.env')['STRIPE_SECRET_KEY']
+STRIPE_API_VERSION = '2020-08-27'
+
+#Yookassa
+
+YOOKASSA_SECRET_KEY = dotenv_values('.env')['YOOKASSA_SECRET_KEY']
+YOOKASSA_SHOP_ID = dotenv_values('.env')['YOOKASSA_SHOP_ID']
